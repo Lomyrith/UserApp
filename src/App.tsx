@@ -63,35 +63,38 @@ export default function App() {
     console.log("User gelöscht:", id);
   };
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Layout />,
-      children: [
-        {
-          index: true,
-          element: (
-            <UserList
-              users={users}
-              onEditUser={handleEditUser}
-              onDeleteUser={onDeleteUser}
-            />
-          ),
-        },
-        {
-          path: "create",
-          element: (
-            <CreateUser
-              key={editingUserId ?? "new"}
-              onAddOrEditUser={handleAddOrEditUser}
-              editingUserId={editingUserId}
-              users={users}
-            />
-          ),
-        },
-      ],
-    },
-  ]);
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: <Layout />,
+        children: [
+          {
+            index: true,
+            element: (
+              <UserList
+                users={users}
+                onEditUser={handleEditUser}
+                onDeleteUser={onDeleteUser}
+              />
+            ),
+          },
+          {
+            path: "create",
+            element: (
+              <CreateUser
+                key={editingUserId ?? "new"}
+                onAddOrEditUser={handleAddOrEditUser}
+                editingUserId={editingUserId}
+                users={users}
+              />
+            ),
+          },
+        ],
+      },
+    ],
+    { basename: import.meta.env.BASE_URL },
+  );
 
   return (
     <ThemeProvider theme={theme}>
