@@ -7,9 +7,11 @@ import { useNavigate } from "react-router-dom";
 export default function UserList({
   users,
   onEditUser,
+  onDeleteUser,
 }: {
   users: IUser[];
   onEditUser: (id: string | number) => void;
+  onDeleteUser: (id: string | number | null) => void;
 }) {
   const navigate = useNavigate(); // Funktioniert hier problemlos!
 
@@ -23,7 +25,11 @@ export default function UserList({
       <Typography variant="h4" gutterBottom>
         Personenübersicht
       </Typography>
-      <UserListContent users={users} onEditUser={handleEditAndNavigate} />
+      <UserListContent
+        users={users}
+        onEditUser={handleEditAndNavigate}
+        onDeleteUser={onDeleteUser}
+      />
     </div>
   );
 }
@@ -31,15 +37,21 @@ export default function UserList({
 function UserListContent({
   users,
   onEditUser,
+  onDeleteUser,
 }: {
   users: IUser[];
   onEditUser: (id: string | number) => void;
+  onDeleteUser: (id: string | number | null) => void;
 }) {
   return (
     <Grid container spacing={2}>
       {users.map((user) => (
         <Grid key={user.id} sx={{ width: { xs: "100%", lg: "49%" } }}>
-          <PersonCard user={user} onClick={() => onEditUser(user.id)} />
+          <PersonCard
+            user={user}
+            onClick={() => onEditUser(user.id)}
+            onDeleteUser={() => onDeleteUser(user.id)}
+          />
         </Grid>
       ))}
     </Grid>

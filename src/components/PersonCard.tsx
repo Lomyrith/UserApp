@@ -11,6 +11,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CakeIcon from "@mui/icons-material/Cake";
 import WorkIcon from "@mui/icons-material/Work";
+import DeleteIcon from "@mui/icons-material/Delete";
 import BusinessIcon from "@mui/icons-material/Business";
 import CopyableTooltip from "../components/CopyableTooltip";
 
@@ -19,11 +20,16 @@ import type { IUser } from "../interfaces/IUser";
 interface PersonCardProps {
   user: IUser;
   onClick?: () => void;
+  onDeleteUser?: (id: string | number | null) => void;
 }
 
 const emptySymbol = "-";
 
-export default function PersonCard({ user, onClick }: PersonCardProps) {
+export default function PersonCard({
+  user,
+  onClick,
+  onDeleteUser,
+}: PersonCardProps) {
   const formattedBirthday = user.birthday
     ? new Date(user.birthday).toLocaleDateString("de-DE", {
         day: "2-digit",
@@ -32,9 +38,15 @@ export default function PersonCard({ user, onClick }: PersonCardProps) {
       })
     : emptySymbol;
 
+  function handleOnDelete(id: string | number | null) {
+    if (!id || !onDeleteUser) return;
+    console.log("User delete:", id);
+    onDeleteUser?.(id);
+  }
+
   return (
     <Card
-      sx={{ display: "flex", height: "100%", minWidth: 0 }}
+      sx={{ cursor: "pointer", display: "flex", height: "100%", minWidth: 0 }}
       onClick={onClick}
     >
       <CardMedia
@@ -83,12 +95,27 @@ export default function PersonCard({ user, onClick }: PersonCardProps) {
               </Typography>
             </CopyableTooltip>
 
-            <Chip
-              label={user.status}
-              color={user.status === "Aktiv" ? "success" : "default"}
-              size="small"
-              variant="outlined"
-            />
+            <div>
+              <Chip
+                label={user.status}
+                color={user.status === "Aktiv" ? "success" : "default"}
+                size="small"
+                variant="outlined"
+                sx={{ mr: 1 }}
+              />
+              <Chip
+                label="X"
+                // sx={{ fontWeight: "bold" }}
+                deleteIcon={<DeleteIcon />}
+                color="error"
+                size="small"
+                variant="outlined"
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  handleOnDelete(user.id);
+                }}
+              />
+            </div>
           </Stack>
 
           {/* 2-Spalten Layout */}

@@ -32,6 +32,7 @@ export default function App() {
     const stored = getStoredUser();
     return stored ? stored : [];
   });
+
   const [editingUserId, setEditingUserId] = useState<string | number | null>(
     null,
   );
@@ -42,9 +43,9 @@ export default function App() {
     const updatedUsers = userExists
       ? users.map((u) => (u.id === user.id ? user : u))
       : [...users, user];
-    setUsers(updatedUsers);
     localStorage.setItem(storageKey, JSON.stringify(updatedUsers));
     console.log("User hinzugefügt:", user);
+    setUsers(updatedUsers);
 
     setEditingUserId(null);
   }
@@ -52,6 +53,16 @@ export default function App() {
   const handleEditUser = (id: string | number) => {
     setEditingUserId(id);
   };
+
+  const onDeleteUser = (id: string | number | null) => {
+    if (!id) return;
+
+    const updatedUsers = users.filter((u) => u.id !== id);
+    localStorage.setItem(storageKey, JSON.stringify(updatedUsers));
+    setUsers(updatedUsers);
+    console.log("User gelöscht:", id);
+  };
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -59,7 +70,13 @@ export default function App() {
       children: [
         {
           index: true,
-          element: <UserList users={users} onEditUser={handleEditUser} />,
+          element: (
+            <UserList
+              users={users}
+              onEditUser={handleEditUser}
+              onDeleteUser={onDeleteUser}
+            />
+          ),
         },
         {
           path: "create",
